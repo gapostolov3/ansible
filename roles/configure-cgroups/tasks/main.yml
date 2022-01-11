@@ -5,6 +5,31 @@
     path: /etc/cgconfig.d/storpool.slice.conf
   register: sp_slice_conf_file
 
+- name: Checking if the running kernel is booted with the latest grub parameters
+  command:
+    cmd: /usr/lib/storpool/kernel_cmdline_check -e 254
+  failed_when: kernels_parameters_present.rc != 254
+  register: kernels_parameters_present
+
+- name: Get latest installed kernel
+  command:
+    cmd: /usr/bin/sp-python3 -c 'from sp.tools import abrtsync ; kernels = abrtsync.get_sorted_kernels() ; assert kernels ; print(kernels[-1])'
+  register: latest_kernel_version
+
+- name: Kexec reboot host
+  command:
+    cmd: '/usr/sbin/prepare_kexec {{latest_kernel_version.stdout}} --append-grubdefault --execute'
+  when: kernels_parameters_present.rc == 254
+  async: 1
+  poll: 0
+
+- name: Waiting for host to get back from kexec
+  wait_for_connection:
+    connect_timeout: 5
+    delay: 15
+    sleep: 2
+    timeout: 600
+
 - name: Checking if the kernel has memory swap cgroup enabled
   stat:
     path: /sys/fs/cgroup/memory/memory.memsw.usage_in_bytes
