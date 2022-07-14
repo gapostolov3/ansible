@@ -5,15 +5,6 @@
   - sp_configure_network is defined and
     sp_configure_network | bool
 
-- name: Validate Network
-  include_tasks: "network_validation.yml"
-
-- name: Make bond adjustments
-  include_tasks: "bond_adjustments.yml"
-  when:
-  - sp_configure_network is defined and
-    sp_configure_network | bool
-
 - name: Generate VF configuration
   include_tasks: "vf_generate_config.yml"
   when:

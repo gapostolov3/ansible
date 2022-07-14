@@ -1,0 +1,9 @@
+---
+# defaults file for setup-network
+net_helper_path: '/usr/sbin/net_helper'
+
+# default genconf configuration to compare changes to
+genconfig_path: "/etc/storpool/autonets.conf"
+
+# default value for force_network_reconfiguration
+force_network_reconfiguration: False

@@ -117,9 +117,6 @@
     - sp_configure_network
     - sp_alternative_net_setup
     - sp_overwrite_iface_conf
-    - sp_single_iface
-    - sp_disable_nm
-    - sp_disable_fw
     - sp_vm
     - sp_summary_wait
 
